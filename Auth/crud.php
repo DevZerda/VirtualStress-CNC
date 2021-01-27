@@ -13,7 +13,7 @@ Get Username Info               USER(usernameOrip, stat_type);
                                                 - admin
                                                 - all [(one string between commas)]
 
-Add User                        AdUser($user, $ip, $password, $level, $maxtime, $level);
+Add User                        AddUser($user, $ip, $password, $level, $maxtime, $level);
 
 Remove User                     RemoveUser($user);
 
@@ -31,7 +31,8 @@ function USER($user, $stat) {
         return "Error, Invalid stat type!";
     }
 
-    $data = file_get_contents("./db/users.db");
+    $ddd = fopen("./db/users.db", "r"));
+    $data = fgets($ddd);
     $fix = str_replace("('", "", $data);
     $fix2 = str_replace("')", "", $fix);
     $db = str_replace("','", ",", $fix2);
@@ -45,18 +46,21 @@ function USER($user, $stat) {
     $db_admin = false;
 
     $users = explode("\n", $db);
-    foreach($users as $usr) {
-        if(strpos($usr, $user) !== false) {
+    foreach($users as $g) {
+        if(strpos($g, $user) !== false) {
             $found_check = true;
-            $info = explode(",", $usr);
+            $info = explode(",", $g);
             $db_user = $info[0];
             $db_ip = $info[1];
             $db_pass = $info[2];
             $db_level = $info[3];
             $db_maxtime = $info[4];
-            $db_admin = $info[5];
+            $db_admin = int($info[5]) == 0 ? true:false;
+            return;
         }
     }
+
+    fclose($ddd);
 
     if($found_check == false) {
         return "Error, No user fonud!";
@@ -84,37 +88,6 @@ function USER($user, $stat) {
                 return "$db_user,$db_ip,$db_pass,$db_level,$db_maxtime,$db_admin";
                 break;
         }
-    }
-}
-
-function AddUser($usr, $ip, $pw, $level, $maxtime, $admin) {
-    if(USER($usr, "all") == "Error, No user fonud!") {
-        $db = fopen("../db/users.db", "r");
-        $contents = fread($db, filesize("../db/users.db"));
-        fclose($db);
-        return "[+] Added";
-    } else {
-        return "[x] Username is taken, Choose another name!";
-    }
-}
-
-function RemoveU($usr) {
-    
-}
-
-function log_session($ip, $username) {
-    $db = fopen("./db/current.db", "a");
-    fwrite($db, "('$username','$ip')\n");
-    fclose($db);
-}
-
-function remove_session($ip) {
-    $old_db = file_get_contents("./db/current.db");
-    $old_users = explode("\n", $old_db);
-
-    $new_db = "";
-    foreac($old_users as $usrr) {
-        
     }
 }
 

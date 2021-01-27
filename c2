@@ -1,0 +1,88 @@
+#!/usr/bin/php
+<?php
+
+include("./Config/strings.php");
+include("./Config/message_handler.php");
+include("./Banners/banners.php");
+include("./Auth/crud.php");
+ini_set('error_reporting', E_ALL ^ E_NOTICE);
+ini_set('display_errors', 1);
+set_time_limit (0);
+
+
+// if(count($argv) < 1) die("Error, Missing argument\r\nUsage ". $argv[0]. " <port>");
+// $address = file_get_contents("https://api.ipify.org");
+// $port = $argv[1];
+
+// $sock = socket_create(AF_INET, SOCK_STREAM, 0);
+// socket_bind($sock, $address, $port) or die('Could not bind to address');
+// socket_listen($sock);
+// socket_set_nonblock($sock);
+
+// // Loop continuously
+// while (true)
+// {
+//     unset($read);
+
+//     $j = 0;
+
+//     if (count($client))
+//     {
+//         foreach ($client AS $k => $v)
+//         {
+//             $read[$j] = $v;
+//             $j++;
+//         }
+//     }
+
+//     $client = $read;
+
+//     if ($newsock = @socket_accept($sock))
+//     {
+//         socket_write($newsock, main_banner(), strlen(main_banner()));
+//         socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
+
+//         if (is_resource($newsock))
+//         {
+//             socket_write($newsock, "$j>", 2).chr(0);
+//             socket_getpeername($newsock, $client_ip, $client_port);
+//             socket_getsockname($newsock, $socket_ip, $socket_port);
+//             echo "Client IP: $client_ip | Client Port: $client_port\r\n";
+//             echo "New client connected $j\r\n";
+
+//             $client[$j] = $newsock;
+
+//             $j++;
+//         }
+//     }
+
+//     if (count($client))
+//     {
+//         foreach ($client AS $k => $v)
+//         {
+//             if (@socket_recv($v, $string, 1024, MSG_DONTWAIT) === 0)
+//             {
+//                 unset($client[$k]);
+//                 socket_close($v);
+//             }
+//             else
+//             {
+//                 if ($string)
+//                 {
+//                     $CurrentMSG["Cmd"] = $string;
+
+//                     if(strpos($string, "SKID") !== false) {
+//                         socket_write($k, "TEST", strlen("TEST"));
+//                         socket_write($v, "TEST", strlen("TEST"));
+//                     }
+//                     echo "$k: $string\r\n";
+//                 }
+//             }
+//         }
+//     }
+//     sleep(1);
+// }
+
+// // Close the master sockets
+// socket_close($sock);
+?>

@@ -49,7 +49,10 @@ $CurrentUser = array(
     "Level" => "",
     "Maxtime" => "",
     "Admin" => false
-)
+);
 
+function GetUserInfo($usernameOrip) {
+
+}
 
 ?>

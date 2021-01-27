@@ -5,13 +5,23 @@ include("./Config/strings.php");
 include("./Config/message_handler.php");
 include("./Banners/banners.php");
 include("./Auth/crud.php");
+include("./Auth/auth.php");
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 ini_set('display_errors', 1);
 set_time_limit (0);
 
-// GetUserInfo(USER($argv[1], "all"));
+$crud = new CRUD();
+$config = new STRING();
+$banner = new BANNERS();
+$auth = new AUTH();
+$skid = $crud->USER($argv[1], "all");
+$split_info = explode(",", $skid);
+if(strpos($auth->login($argv[1], $argv[2], $split_info[0], $split_info[2]), "Successfully") !== false) {
+    echo "worked";
+} else {
+    echo "not working";
+}
 
-echo $CurrentUser["Title"];
 // if(count($argv) < 1) die("Error, Missing argument\r\nUsage ". $argv[0]. " <port>");
 // $address = file_get_contents("https://api.ipify.org");
 // $port = $argv[1];

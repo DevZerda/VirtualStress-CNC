@@ -3,28 +3,30 @@
 /*
             CNC Info Doc
 
-CNC Title           $CNC_Info["TITLE"];
-Description         $CNC_Info["Description"];
-Version             $CNC_Info["Version"];
-Creator             $CNC_Info["Creator"];
-Owner               $CNC_Info["Onwer"][0] | $CNC_Info["Owner"][1];
+CNC Title           $CNC_Info["TITLE"];                                     Get : Set
+Description         $CNC_Info["Description"];                               Get : Set
+Version             $CNC_Info["Version"];                                   Get : Set
+Creator             $CNC_Info["Creator"];                                   Get : Set
+Owner               $CNC_Info["Onwer"][0] | $CNC_Info["Owner"][1];          Get : Set
 Verification        $CNC_Info["Verification Code"];
 
 
            Current MSG Doc
 
-Cmd                 $CurrentMSG["Cmd"];
-Fullcmd             $CurrentMSG["Fullcmd"];
-arg                 $CurrentMSG["arg"][int++];
+Cmd                 $CurrentMSG["Cmd"];                                     Get : Set
+Fullcmd             $CurrentMSG["Fullcmd"];                                 Get : Set
+arg                 $CurrentMSG["arg"][int++];                              Get : Set
 
            Current User Doc
 
-Username            $CurrentUser["Username"];
-IP                  $CurrentUser["IP"];
-Password            $CurrentUser["Password"];
-Level               $CurrentUser["Level"];
-Maxtime             $CurrentUser["Maxtime"];
-Admin               $CurrentUser["Admin"];
+Username            $CurrentUser["Username"];                               Get : Set
+IP                  $CurrentUser["IP"];                                     Get : Set
+Password            $CurrentUser["Password"];                               Get : Set
+Level               $CurrentUser["Level"];                                  Get : Set
+Maxtime             $CurrentUser["Maxtime"];                                Get : Set
+Admin               $CurrentUser["Admin"];                                  Get : Set
+
+Set User Info       GetUserInfo($UserDBData);                               Function
 */
 
 class STRING {

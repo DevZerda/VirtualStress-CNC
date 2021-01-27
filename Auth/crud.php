@@ -31,8 +31,7 @@ function USER($user, $stat) {
         return "Error, Invalid stat type!";
     }
 
-    $ddd = fopen("./db/users.db", "r"));
-    $data = fgets($ddd);
+    $data = file_get_contents("./db/users.db");
     $fix = str_replace("('", "", $data);
     $fix2 = str_replace("')", "", $fix);
     $db = str_replace("','", ",", $fix2);
@@ -46,21 +45,18 @@ function USER($user, $stat) {
     $db_admin = false;
 
     $users = explode("\n", $db);
-    foreach($users as $g) {
-        if(strpos($g, $user) !== false) {
+    foreach($users as $usr) {
+        if(strpos($usr, $user) !== false) {
             $found_check = true;
-            $info = explode(",", $g);
+            $info = explode(",", $usr);
             $db_user = $info[0];
             $db_ip = $info[1];
             $db_pass = $info[2];
             $db_level = $info[3];
             $db_maxtime = $info[4];
-            $db_admin = int($info[5]) == 0 ? true:false;
-            return;
+            $db_admin = $info[5];
         }
     }
-
-    fclose($ddd);
 
     if($found_check == false) {
         return "Error, No user fonud!";
@@ -89,6 +85,32 @@ function USER($user, $stat) {
                 break;
         }
     }
+}
+
+function AddUser($usr, $ip, $pw, $level, $maxtime, $admin) {
+        $db = fopen("./db/users.db", "a");
+        fwrite($db, "('$usr','$ip','$pw','$level','$maxtime','$admin')\n");
+        fclose($db);
+}
+
+function RemoveU($usr) {
+    
+}
+
+function log_session($ip, $username) {
+    $db = fopen("./db/current.db", "a");
+    fwrite($db, "('$username','$ip')\n");
+    fclose($db);
+}
+
+function remove_session($ip) {
+    $old_db = file_get_contents("./db/current.db");
+    $old_users = explode("\n", $old_db);
+
+    $new_db = "";
+    // foreach($old_users as $usrr) {
+        
+    // }
 }
 
 ?>

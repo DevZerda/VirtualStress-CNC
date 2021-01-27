@@ -66,7 +66,7 @@ $Colors = array(
     "Background_Grey" => "\x1b[100m",
     "Background_Reset" => "\x1b[49m",
     "Clear" => "\033[2J\033[1;1H"
-)
+);
 
 function GetUserInfo($info) {
     $get_user = explode(",", $info);

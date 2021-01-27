@@ -1,6 +1,13 @@
 #!/usr/bin/php
 <?php
 
+
+/*
+@title: VirtualStress CNC/C2 
+@creator: Scrapy
+@since: 1/6/2021
+*/
+
 include("./Config/strings.php");
 include("./Config/message_handler.php");
 include("./Banners/banners.php");
@@ -14,9 +21,12 @@ $crud = new CRUD();
 $config = new STRING();
 $banner = new BANNERS();
 $auth = new AUTH();
+
 $skid = $crud->USER($argv[1], "all");
 $split_info = explode(",", $skid);
-if(strpos($auth->login($argv[1], $argv[2], $split_info[0], $split_info[2]), "Successfully") !== false) {
+$auth_response = $auth->login($argv[1], $argv[2], $split_info[0], $split_info[2]);
+echo $auth_response;
+if(strpos($auth_response, "Successfully") !== false) {
     echo "worked";
 } else {
     echo "not working";

@@ -1,5 +1,29 @@
 <?php
 
+/*
+            CRUD Doc
+
+Get Username Info               USER(usernameOrip, stat_type);
+                                        Stat Types: 
+                                                - username
+                                                - ip
+                                                - password
+                                                - level
+                                                - maxtime
+                                                - admin
+                                                - all [(one string between commas)]
+
+Add User                        AdUser($user, $ip, $password, $level, $maxtime, $level);
+
+Remove User                     RemoveUser($user);
+
+Check if Signed In              isSignIn(usernameOrip);
+
+Check If Premium                isPremium($usernameOrip);
+
+Check If Admin                  isAdmin($usernameOrip);
+*/
+
 function USER($user, $stat) {
 
     $stat_types = array("username", "ip", "password", "level", "maxtime", "admin", "all");
@@ -63,7 +87,7 @@ function USER($user, $stat) {
     }
 }
 
-function add($usr, $ip, $pw, $level, $maxtime, $admin) {
+function AddUser($usr, $ip, $pw, $level, $maxtime, $admin) {
     if(USER($usr, "all") == "Error, No user fonud!") {
         $db = fopen("../db/users.db", "r");
         $contents = fread($db, filesize("../db/users.db"));
@@ -74,7 +98,7 @@ function add($usr, $ip, $pw, $level, $maxtime, $admin) {
     }
 }
 
-function remove($usr) {
+function RemoveU($usr) {
     
 }
 

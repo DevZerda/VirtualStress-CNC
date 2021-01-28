@@ -99,16 +99,10 @@ class CRUD
     }
 
     public function log_session($ip, $username) {
-        // Look into the CSV functions or read/write JSON. Much faster, more elegant.
-        // Less cancerware ;)
-        // Base ref for CSV: https://www.php.net/manual/de/function.fgetcsv.php
-        // For json: json_encode/json_decode to encode and decode JSON
-        // Keep this here. i'll check it out
-        /*
         $db = fopen("./db/current.db", "a");
         fwrite($db, "('$username','$ip')\n");
         fclose($db);
-        */
+        /*
         $db = file_get_contents("./db/current.db");
         try {
             $users = json_decode($db);
@@ -119,13 +113,24 @@ class CRUD
         if(!in_array($username, $users["listed"])) {
             $users["listed"][$username] = $ip;
         }
-        //NEVER THOUGHT OF USING THIS vv file_put_contents(). THIS ONLY APPENDS? no overwrite?
-        // docs: https://www.php.net/manual/en/function.file-put-contents.php
-        // you dutch ? lol
-        file_put_contents("./db/current.db", json_serialize($users));
+        
+        file_put_contents("./db/current.db", json_serialize($users)); */
     }
 
     public function remove_session($ip) {
+        $old_db = file_get_contents("./db/current.db");
+        $old_users = explode("\n", $old_db);
+        $new_db = "";
+        foreach($old_db as $skid) {
+            if(!$skid.include($ip) && strlen($skid) > 5) {
+                $new_db += $skid;
+            }
+        }
+
+        $new_data = fopen("./db/users.db", "w");
+        fwrite($new_data, $new_db);
+        fclose($new_data);
+        /*
         $old_db = file_get_contents("./db/current.db");
         try {
             $old_users = json_decode($old_db);
@@ -140,25 +145,51 @@ class CRUD
         if(!is_null($found_user)) {
             delete($old_db["listed"][$found_user]);
             file_put_contents("./db/current.db", json_serialize($old_db));
-        }
+        } */
     }
 
     public function isSignedIn($status) {
-        //BRUH THIS IS WRONG. THIS SUPPOSE TO BE DOING SOMETHING ELSE LMAO
-        // then go fix it? o.o yes // read file from current.db to see if user is in it (HERE AN USER LINE: [ '('Jeff','1.1.1.1')' ]
-        // I'll just reimpl all three of that. Gimme a sec.
+        /*
+        Read file for user chekcing 
+        */
+
+        $data = file_get_contents("./db/users.db");
+        $fix = str_replace("('", "", $data);
+        $fix2 = str_replace("')", "", $fix);
+        $users = explode("\n", $fix2);
+        foreach($users as $u) {
+            if()
+        }
+    }
+
+    public function Get_Current_Info($usrOrip) {
+        $data = file_get_contents("./db/current.db");
+        $users = explode("\n", $data);
+
+        $found_check = false;
+        $response = "";
+
+        foreach($users as $u) {
+            if($u.include($usrOrip)) {
+                $fix = str_replace("('", "", $u);
+                $fix_2 = str_replace("')", "", $fix);
+                return str_replace("','", "", $fix_2);
+            }
+        }
     }
 
     public function isPremium($usr) {
         $get_user = $this->USER($usr, "all")[3];
-        if($get_user )
-        if(intval($status) == 0) {
-            return false;
-        } else if(intval($status) > 0 || intval($status) < 5) {
-            return true;
+        if($get_user == "Error, No user fonud!") {
+            return "Error, No user fonud!";
+        } else {
+            if(intval($status) == 0) {
+                return false;
+            } else if(intval($status) > 0 || intval($status) < 5) {
+                return true;
+            }
         }
-    } // this my first source in OOP. wait its possible to use $this->USER();?
-    //idk why im fetching info from USER() here in main file to send back to these functions LMAO
+    }
 
     public function isAdmin($status) {
         

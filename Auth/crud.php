@@ -47,15 +47,17 @@ class CRUD
 
         $users = explode("\n", $db);
         foreach($users as $usr) {
-            $info = explode(",", $usr);
-            if($info[0] == $user || $info[1] == $user) {
-                $found_check = true;
-                $db_user = $info[0];
-                $db_ip = $info[1];
-                $db_pass = $info[2];
-                $db_level = $info[3];
-                $db_maxtime = $info[4];
-                $db_admin = $info[5];
+            if (strlen($usr) > 4) {
+                $info = explode(",", $usr);
+                if($info[0] == $user || $info[1] == $user) {
+                    $found_check = true;
+                    $db_user = $info[0];
+                    $db_ip = $info[1];
+                    $db_pass = $info[2];
+                    $db_level = $info[3];
+                    $db_maxtime = $info[4];
+                    $db_admin = $info[5];
+                }
             }
         }
 
@@ -89,12 +91,12 @@ class CRUD
     }
 
     public function AddUser($usr, $ip, $pw, $level, $maxtime, $admin) {
-            $db = fopen("./db/users.db", "a");
-            fwrite($db, "('$usr','$ip','$pw','$level','$maxtime','$admin')\n");
-            fclose($db);
+        $db = fopen("./db/users.db", "a");
+        fwrite($db, "('$usr','$ip','$pw','$level','$maxtime','$admin')\n");
+        fclose($db);
     }
 
-    public function RemoveU($usr) {
+    public function RemoveUser($usr) {
         
     }
 
@@ -148,7 +150,7 @@ class CRUD
         } */
     }
 
-    public function isSignedIn($status) {
+    public function isSignedIn($usrOrip) {
         /*
         Read file for user chekcing 
         */
@@ -158,7 +160,9 @@ class CRUD
         $fix2 = str_replace("')", "", $fix);
         $users = explode("\n", $fix2);
         foreach($users as $u) {
-            if()
+            if($u.include($usrOrip)) {
+                return true;
+            }
         }
     }
 
@@ -171,10 +175,18 @@ class CRUD
 
         foreach($users as $u) {
             if($u.include($usrOrip)) {
+                $found_check = true;
                 $fix = str_replace("('", "", $u);
                 $fix_2 = str_replace("')", "", $fix);
-                return str_replace("','", "", $fix_2);
+                $response = str_replace("','", ",", $fix_2);
+                return;
             }
+        }
+
+        if($found_check == false) {
+            return "Error, No user found!";
+        } else {
+            return $response;
         }
     }
 
@@ -191,7 +203,17 @@ class CRUD
         }
     }
 
-    public function isAdmin($status) {
+    public function isAdmin($usr) {
+        $get_user = $this->USER($usr, "all")[5];
+        if($get_user == "Error, No user found!") {
+            return false;
+        } else if(intval($get_user) == 0) {
+            return false;
+        } else if(intval($get_user) == 1) {
+            return true;
+        } else {
+            return false;
+        }
         
     }
 }

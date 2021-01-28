@@ -31,6 +31,7 @@ Set User Info       GetUserInfo($UserDBData);                               Func
 
 class STRING {
     public $CNC_Info = array(
+        "Hostname" => "project@virtual#~ ",
         "Title" => "Virtual Stress CNC",
         "Description" => "Bypassing All Connection!",
         "Version" => "1.00",
@@ -46,6 +47,7 @@ class STRING {
     );
 
     public $CurrentUser = array( 
+        "CurrentIP" => "",
         "Username" => "",
         "IP" => "",
         "Password" => "",

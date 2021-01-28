@@ -3,7 +3,7 @@
 /*
             CNC Info Doc
 
-CNC Title           $CNC_Info["TITLE"];                                     Get : Set
+CNC Title           $CNC_Info["Title"];                                     Get : Set
 Description         $CNC_Info["Description"];                               Get : Set
 Version             $CNC_Info["Version"];                                   Get : Set
 Creator             $CNC_Info["Creator"];                                   Get : Set

@@ -61,7 +61,7 @@ while (true)
         $passwd = getInput($newsock, "Password: ", 3);
         $user_info = explode(",", $gay);
         if($usrname == $user_info[0] || $passwd == $user_info[2]) {
-            $crud->log_session($client_ip, $usrname);
+            $crud->log_session($client_ip, $user_info[0]);
             socket_write($newsock, "Successfully signed in, Welcome: ". $usrname. "\r\n", strlen("Successfully signed in, Welcome: ". $usrname. "\r\n"));
         } else {
             socket_write($newsock, "[x] Invalid Info\r\n", strlen("[x] Invalid Info\r\n"));
@@ -70,8 +70,6 @@ while (true)
 
         if (is_resource($newsock))
         {
-            
-            // socket_write($newsock, "$j>", 2).chr(0);
             socket_getpeername($newsock, $client_ip, $client_port);
             socket_getsockname($newsock, $socket_ip, $socket_port);
             echo "#[NEW CLIENT CONNECTED]#\r\nClient IP: $client_ip | Client Port: $client_port\r\n\r\n";
@@ -97,7 +95,7 @@ while (true)
                 {
                     
                     socket_getpeername($v, $client_ip, $client_port);
-                    $config->CurrentUser["CurrentIP"];
+                    $config->CurrentUser["CurrentIP"] = $client_ip;
                     
                     /*
                     Command Handler
@@ -116,23 +114,23 @@ while (true)
 
 
                     $User_Info = $crud->Get_Current_Info($client_ip);
-                    $get_usrn = explode(",", $User_Info);
-                    $config->GetUserInfo($get_usrn[0]);
+                    $get_usrn = explode(",", $User_Info)[0];
+                    $config->GetUserInfo($get_usrn);
                     echo $config->CurrentUser["Username"]. " | ". $config->CurrentUser["CurrentIP"]. "\r\n\r\n";
 
                     /*
                     Command Checking
                     */
                     if($crud->isSignedIn($client_ip)) {
-                        if($string.startsWith("geo")) {
-                            $inputIP = $confg->CurrentMSG["arg"][1];
+                        if(strpos($string, "geo") !== false) {
+                            $inputIP = explode(" ", $string)[1];
                             $response = file_get_contents("https://scrapy.tech/tools/?action=geoip&q=$inputIP");
                             socket_write($v, "$response\r\n$hostn", strlen("$response\r\n$hostn"));
                         } else {
                             socket_write($v, "[x] No command found\r\n$hostn", strlen("[x] No command found\r\n$hostn"));
                         }
                     } else {
-                        socket_write($v, "Closing", strlen("Closing"));
+                        socket_write($v, "$hostn", strlen("$hostn"));
                         // socket_close($v);
                     }
                     /*

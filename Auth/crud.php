@@ -151,18 +151,13 @@ class CRUD
     }
 
     public function isSignedIn($usrOrip) {
-        /*
-        Read file for user chekcing 
-        */
-
-        $data = file_get_contents("./db/users.db");
-        $fix = str_replace("('", "", $data);
-        $fix2 = str_replace("')", "", $fix);
-        $users = explode("\n", $fix2);
-        foreach($users as $u) {
-            if($u.include($usrOrip)) {
-                return true;
-            }
+        $skid = $this->Get_Current_Info($usrOrip);
+        if($skid == "Error, No user found!"){
+            return false;
+        } else if($skid.include($usrOrip)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

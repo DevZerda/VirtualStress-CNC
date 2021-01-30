@@ -31,7 +31,7 @@ Set User Info       GetUserInfo($UserDBData);                               Func
 
 class STRING {
     public $CNC_Info = array(
-        "Hostname" => "project@virtual#~ ",
+        "Hostname" => "\x1b[31m[\x1b[95mproject\x1b[31m@\x1b[95mvirtual\x1b[31m]#~ ",
         "Title" => "Virtual Stress CNC",
         "Description" => "Bypassing All Connection!",
         "Version" => "1.00",
@@ -57,7 +57,7 @@ class STRING {
     );
 
     public $Colors = array(
-        "Red" => "",
+        "Red" => "\x1b[31m",
         "Yellow" => "\x1b[33m",
         "Blue" => "\x1b[34m",
         "Purple" => "\x1b[95m",

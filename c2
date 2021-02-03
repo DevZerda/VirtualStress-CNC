@@ -54,9 +54,9 @@ while (true)
 
     if ($newsock = @socket_accept($sock))
     {
-        // socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
-        // socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
-        // socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
+        socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
+        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
+        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
         socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
         socket_getpeername($newsock, $client_ip, $client_port);
         $usrname = alt_getInput($newsock, "Username: ", 3);

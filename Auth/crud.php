@@ -50,6 +50,7 @@ class CRUD
             if (strlen($usr) > 4) {
                 $info = explode(",", $usr);
                 if($info[0] == $user || $info[1] == $user) {
+                    echo $usr. "\r\n";
                     $found_check = true;
                     $db_user = $info[0];
                     $db_ip = $info[1];

